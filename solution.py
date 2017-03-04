@@ -10,7 +10,8 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-diagonal_units = [[a+b for a,b in zip(rows,cols)],[a+b for a,b in zip(rows,reversed(cols))]]
+diagonal_units = [[a+b for a, b in zip(rows, cols)],
+                  [a+b for a, b in zip(rows, reversed(cols))]]
 unitlist = row_units + column_units + square_units + diagonal_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
@@ -110,6 +111,7 @@ def reduce_puzzle(values):
             return False
     return values
 
+
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
     Args:
@@ -123,16 +125,18 @@ def naked_twins(values):
         neigh_boxes = units[box]
 
         for unit_itens in neigh_boxes:
+            # Find all instances of naked twins
             twins = [key for key, value in Counter(values[value] for value in unit_itens).items() if value == 2 and len(key) == 2]
             for value in unit_itens:
+                # Eliminate the naked twins as possibilities for their peers
                 for twin in twins:
                     for char in twin:
                         if (values[value] != twin) and (char in values[value]):
                             assign_value(values, value, values[value].replace(char, ''))
     return values
-    # Find all instances of naked twins
 
-    # Eliminate the naked twins as possibilities for their peers
+
+
 
 
 def search(values):
